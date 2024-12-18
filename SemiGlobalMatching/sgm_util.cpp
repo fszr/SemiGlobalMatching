@@ -14,8 +14,8 @@
 #include <omp.h>
 #endif
 
-void sgm_util::census_transform_5x5(const uint8* source, uint32* census, const sint32& width,
-	const sint32& height)
+void sgm_util::census_transform_5x5(const uint8* source, uint32* census, const uint64& width,
+	const uint64& height)
 {
 	if (source == nullptr || census == nullptr || width <= 5 || height <= 5) {
 		return;
@@ -49,7 +49,7 @@ void sgm_util::census_transform_5x5(const uint8* source, uint32* census, const s
 	}
 }
 
-void sgm_util::census_transform_9x7(const uint8* source, uint64* census, const sint32& width, const sint32& height)
+void sgm_util::census_transform_9x7(const uint8* source, uint64* census, const uint64& width, const uint64& height)
 {
 	if (source == nullptr || census == nullptr || width <= 9 || height <= 7) {
 		return;
@@ -110,7 +110,7 @@ uint8 sgm_util::Hamming64(const uint64& x, const uint64& y)
 }
 
 
-void sgm_util::CostAggregateLeftRight(const uint8* img_data, const sint32& width, const sint32& height, const sint32& min_disparity, const sint32& max_disparity,
+void sgm_util::CostAggregateLeftRight(const uint8* img_data, const uint64& width, const uint64& height, const sint32& min_disparity, const sint32& max_disparity,
 	const sint32& p1, const sint32& p2_init, const uint8* cost_init, uint8* cost_aggr, bool is_forward)
 {
 	assert(width > 0 && height > 0 && max_disparity > min_disparity);
@@ -186,7 +186,7 @@ void sgm_util::CostAggregateLeftRight(const uint8* img_data, const sint32& width
 	}
 }
 
-void sgm_util::CostAggregateUpDown(const uint8* img_data, const sint32& width, const sint32& height,
+void sgm_util::CostAggregateUpDown(const uint8* img_data, const uint64& width, const uint64& height,
 	const sint32& min_disparity, const sint32& max_disparity, const sint32& p1, const sint32& p2_init,
 	const uint8* cost_init, uint8* cost_aggr, bool is_forward)
 {
@@ -263,7 +263,7 @@ void sgm_util::CostAggregateUpDown(const uint8* img_data, const sint32& width, c
 	}
 }
 
-void sgm_util::CostAggregateDagonal_1(const uint8* img_data, const sint32& width, const sint32& height,
+void sgm_util::CostAggregateDagonal_1(const uint8* img_data, const uint64& width, const uint64& height,
 	const sint32& min_disparity, const sint32& max_disparity, const sint32& p1, const sint32& p2_init,
 	const uint8* cost_init, uint8* cost_aggr, bool is_forward)
 {
@@ -389,7 +389,7 @@ void sgm_util::CostAggregateDagonal_1(const uint8* img_data, const sint32& width
 	}
 }
 
-void sgm_util::CostAggregateDagonal_2(const uint8* img_data, const sint32& width, const sint32& height,
+void sgm_util::CostAggregateDagonal_2(const uint8* img_data, const uint64& width, const uint64& height,
 	const sint32& min_disparity, const sint32& max_disparity, const sint32& p1, const sint32& p2_init,
 	const uint8* cost_init, uint8* cost_aggr, bool is_forward)
 {
@@ -515,7 +515,7 @@ void sgm_util::CostAggregateDagonal_2(const uint8* img_data, const sint32& width
 	}
 }
 
-void sgm_util::MedianFilter(const float32* in, float32* out, const sint32& width, const sint32& height,
+void sgm_util::MedianFilter(const float32* in, float32* out, const uint64& width, const uint64& height,
 	const sint32 wnd_size)
 {
 	const sint32 radius = wnd_size / 2;
@@ -548,7 +548,7 @@ void sgm_util::MedianFilter(const float32* in, float32* out, const sint32& width
 	}
 }
 
-void sgm_util::RemoveSpeckles(float32* disparity_map, const sint32& width, const sint32& height,
+void sgm_util::RemoveSpeckles(float32* disparity_map, const uint64& width, const uint64& height,
 	const sint32& diff_insame, const uint32& min_speckle_aera, const float32& invalid_val)
 {
 	assert(width > 0 && height > 0);

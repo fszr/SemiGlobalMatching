@@ -23,8 +23,8 @@ namespace sgm_util
 	 * \param width		输入，影像宽
 	 * \param height	输入，影像高
 	 */
-	void census_transform_5x5(const uint8* source, uint32* census, const sint32& width, const sint32& height);
-	void census_transform_9x7(const uint8* source, uint64* census, const sint32& width, const sint32& height);
+	void census_transform_5x5(const uint8* source, uint32* census, const uint64& width, const uint64& height);
+	void census_transform_9x7(const uint8* source, uint64* census, const uint64& width, const uint64& height);
 	// Hamming距离
 	uint8 Hamming32(const uint32& x, const uint32& y);
 	uint8 Hamming64(const uint64& x, const uint64& y);
@@ -42,7 +42,7 @@ namespace sgm_util
 	 * \param cost_aggr			输出，路径聚合代价数据
 	 * \param is_forward		输入，是否为正方向（正方向为从左到右，反方向为从右到左）
 	 */
-	void CostAggregateLeftRight(const uint8* img_data, const sint32& width, const sint32& height, const sint32& min_disparity, const sint32& max_disparity,
+	void CostAggregateLeftRight(const uint8* img_data, const uint64& width, const uint64& height, const sint32& min_disparity, const sint32& max_disparity,
 		const sint32& p1,const sint32& p2_init, const uint8* cost_init, uint8* cost_aggr, bool is_forward = true);
 
 	/**
@@ -58,7 +58,7 @@ namespace sgm_util
 	 * \param cost_aggr			输出，路径聚合代价数据
 	 * \param is_forward		输入，是否为正方向（正方向为从上到下，反方向为从下到上）
 	 */
-	void CostAggregateUpDown(const uint8* img_data, const sint32& width, const sint32& height, const sint32& min_disparity, const sint32& max_disparity,
+	void CostAggregateUpDown(const uint8* img_data, const uint64& width, const uint64& height, const sint32& min_disparity, const sint32& max_disparity,
 		const sint32& p1, const sint32& p2_init, const uint8* cost_init, uint8* cost_aggr, bool is_forward = true);
 
 	/**
@@ -74,7 +74,7 @@ namespace sgm_util
 	 * \param cost_aggr			输出，路径聚合代价数据
 	 * \param is_forward		输入，是否为正方向（正方向为从左上到右下，反方向为从右下到左上）
 	 */
-	void CostAggregateDagonal_1(const uint8* img_data, const sint32& width, const sint32& height, const sint32& min_disparity, const sint32& max_disparity,
+	void CostAggregateDagonal_1(const uint8* img_data, const uint64& width, const uint64& height, const sint32& min_disparity, const sint32& max_disparity,
 		const sint32& p1, const sint32& p2_init, const uint8* cost_init, uint8* cost_aggr, bool is_forward = true);
 
 	/**
@@ -90,7 +90,7 @@ namespace sgm_util
 	 * \param cost_aggr			输出，路径聚合代价数据
 	 * \param is_forward		输入，是否为正方向（正方向为从上到下，反方向为从下到上）
 	 */
-	void CostAggregateDagonal_2(const uint8* img_data, const sint32& width, const sint32& height, const sint32& min_disparity, const sint32& max_disparity,
+	void CostAggregateDagonal_2(const uint8* img_data, const uint64& width, const uint64& height, const sint32& min_disparity, const sint32& max_disparity,
 		const sint32& p1, const sint32& p2_init, const uint8* cost_init, uint8* cost_aggr, bool is_forward = true);
 
 	
@@ -102,7 +102,7 @@ namespace sgm_util
 	 * \param height			输入，高度
 	 * \param wnd_size			输入，窗口宽度
 	 */
-	void MedianFilter(const float32* in, float32* out, const sint32& width, const sint32& height, const sint32 wnd_size);
+	void MedianFilter(const float32* in, float32* out, const uint64& width, const uint64& height, const sint32 wnd_size);
 
 
 	/**
@@ -114,5 +114,5 @@ namespace sgm_util
 	 * \param min_speckle_aera	输入，最小连通区面积
 	 * \param invalid_val		输入，无效值
 	 */
-	void RemoveSpeckles(float32* disparity_map, const sint32& width, const sint32& height, const sint32& diff_insame,const uint32& min_speckle_aera, const float32& invalid_val);
+	void RemoveSpeckles(float32* disparity_map, const uint64& width, const uint64& height, const sint32& diff_insame,const uint32& min_speckle_aera, const float32& invalid_val);
 }

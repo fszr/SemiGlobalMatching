@@ -40,6 +40,11 @@ int main(int argv, char** argc)
         std::cout << "读取影像失败！" << std::endl;
         return -1;
     }
+    if (img_left.rows == -1 || img_left.cols == -1 || img_right.rows == -1 || img_right.cols == -1)
+    {
+        std::cout << "The image has more than 2 dimensions" << std::endl;
+        return -1;
+    }
     if (img_left.rows != img_right.rows || img_left.cols != img_right.cols) {
         std::cout << "左右影像尺寸不一致！" << std::endl;
         return -1;
@@ -47,9 +52,8 @@ int main(int argv, char** argc)
 
 
     //···············································································//
-    const sint32 width = static_cast<uint32>(img_left.cols);
-    const sint32 height = static_cast<uint32>(img_right.rows);
-
+    const uint32 width = static_cast<uint32>(img_left.cols);
+    const uint32 height = static_cast<uint32>(img_right.rows);
     // 左右影像的灰度数据
     auto bytes_left = new uint8[width * height];
     auto bytes_right = new uint8[width * height];
@@ -87,6 +91,11 @@ int main(int argv, char** argc)
     // 视差图填充的结果并不可靠，若工程，不建议填充，若科研，则可填充
     sgm_option.is_fill_holes = false;
 
+    if (sgm_option.min_disparity >= sgm_option.max_disparity)
+    {
+        printf("min_disparity can not larger than max_disparity");
+        return -1;
+    }
     printf("w = %d, h = %d, d = [%d,%d]\n\n", width, height, sgm_option.min_disparity, sgm_option.max_disparity);
 
     // 定义SGM匹配类实例
@@ -122,7 +131,8 @@ int main(int argv, char** argc)
 	// 显示视差图
     // 注意，计算点云不能用disp_mat的数据，它是用来显示和保存结果用的。计算点云要用上面的disparity数组里的数据，是子像素浮点数
     cv::Mat disp_mat = cv::Mat(height, width, CV_8UC1);
-    float min_disp = width, max_disp = -width;
+    float min_disp = width, max_disp = -float(width);
+    printf("% f, % f\n", min_disp, max_disp);
     for (sint32 i = 0; i < height; i++) {
         for (sint32 j = 0; j < width; j++) {
             const float32 disp = disparity[i * width + j];
@@ -132,6 +142,8 @@ int main(int argv, char** argc)
             }
         }
     }
+    printf("% f, % f\n", min_disp, max_disp);
+
     for (sint32 i = 0; i < height; i++) {
         for (sint32 j = 0; j < width; j++) {
             const float32 disp = disparity[i * width + j];
@@ -146,7 +158,7 @@ int main(int argv, char** argc)
 
     //cv::imshow("视差图", disp_mat);
     cv::Mat disp_color;
-    applyColorMap(disp_mat, disp_color, cv::COLORMAP_JET);
+    cv::applyColorMap(disp_mat, disp_color, cv::COLORMAP_JET);
     //cv::imshow("视差图-伪彩", disp_color);
 
     // 保存结果
