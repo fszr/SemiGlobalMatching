@@ -4,12 +4,15 @@
 * Describe	: implement of sgm_util
 */
 
-#include "stdafx.h"
 #include "sgm_util.h"
 #include <algorithm>
 #include <cassert>
 #include <vector>
 #include <queue>
+
+#ifdef _USE_OPENMP
+#include <omp.h>
+#endif
 
 void sgm_util::census_transform_5x5(const uint8* source, uint32* census, const sint32& width,
 	const sint32& height)
@@ -19,6 +22,9 @@ void sgm_util::census_transform_5x5(const uint8* source, uint32* census, const s
 	}
 
 	// ÖğÏñËØ¼ÆËãcensusÖµ
+#ifdef _USE_OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
 	for (sint32 i = 2; i < height - 2; i++) {
 		for (sint32 j = 2; j < width - 2; j++) {
 			
@@ -50,6 +56,9 @@ void sgm_util::census_transform_9x7(const uint8* source, uint64* census, const s
 	}
 
 	// ÖğÏñËØ¼ÆËãcensusÖµ
+#ifdef _USE_OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
 	for (sint32 i = 4; i < height - 4; i++) {
 		for (sint32 j = 3; j < width - 3; j++) {
 

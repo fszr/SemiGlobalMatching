@@ -3,18 +3,14 @@
 * Describe	: main
 */
 
-#include "stdafx.h"
 #include "SemiGlobalMatching.h"
 #include <chrono>
+#include <filesystem>
+
 using namespace std::chrono;
 
 // opencv library
 #include <opencv2/opencv.hpp>
-#ifdef _DEBUG
-#pragma comment(lib,"opencv_world310d.lib")
-#else
-#pragma comment(lib,"opencv_world310.lib")
-#endif
 
 /**
  * \brief
@@ -148,19 +144,27 @@ int main(int argv, char** argc)
         }
     }
 
-    cv::imshow("篇餓夕", disp_mat);
+    //cv::imshow("篇餓夕", disp_mat);
     cv::Mat disp_color;
     applyColorMap(disp_mat, disp_color, cv::COLORMAP_JET);
-    cv::imshow("篇餓夕-留科", disp_color);
+    //cv::imshow("篇餓夕-留科", disp_color);
 
     // 隠贋潤惚
-    std::string disp_map_path = argc[1]; disp_map_path += ".d.png";
-    std::string disp_color_map_path = argc[1]; disp_color_map_path += ".c.png";
+    std::string disp_map_path = argc[1];
+    disp_map_path += ".d.png";
+    std::string disp_color_map_path = argc[1];
+    disp_color_map_path += ".c.png";
+    if (std::filesystem::exists(disp_map_path)) {
+        std::filesystem::remove(disp_map_path);
+    }    
+    if (std::filesystem::exists(disp_color_map_path)) {
+        std::filesystem::remove(disp_color_map_path);
+    }
     cv::imwrite(disp_map_path, disp_mat);
     cv::imwrite(disp_color_map_path, disp_color);
 
 
-    cv::waitKey(0);
+    //cv::waitKey(0);
 
     //，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，//
     // 瞥慧坪贋
@@ -171,7 +175,7 @@ int main(int argv, char** argc)
     delete[] bytes_right;
     bytes_right = nullptr;
 
-    system("pause");
+    //system("pause");
     return 0;
 }
 

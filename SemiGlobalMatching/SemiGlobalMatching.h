@@ -7,12 +7,13 @@
 #pragma once
 
 #include "sgm_types.h"
+#include "export.h"
 #include <vector>
 
 /**
  * \brief SemiGlobalMatching¿‡£®General implementation of Semi-Global Matching£©
  */
-class SemiGlobalMatching
+class LIBTSGM_API SemiGlobalMatching
 {
 public:
 	SemiGlobalMatching();
