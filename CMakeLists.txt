@@ -25,6 +25,20 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${OUTPUT_DIR}/${CMAKE_BUILD_TYPE})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${OUTPUT_DIR}/${CMAKE_BUILD_TYPE})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${OUTPUT_DIR}/${CMAKE_BUILD_TYPE})
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wshadow
+        -Werror=return-type
+        -Wstrict-aliasing
+        -Wuninitialized
+    )
+elseif(MSVC)
+    add_compile_options(
+        /W4
+    )
+endif()
 
 # 寻找依赖库opencv
 option(OpenCV_cmake_dir "Path to OpenCV CMake directory" "")

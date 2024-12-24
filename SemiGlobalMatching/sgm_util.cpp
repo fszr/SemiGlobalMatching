@@ -557,10 +557,10 @@ void sgm_util::RemoveSpeckles(float32* disparity_map, const uint64& width, const
 	}
 
 	// 定义标记像素是否访问的数组
-	std::vector<bool> visited(uint32(width*height),false);
-	for(sint32 i=0;i<height;i++) {
-		for(sint32 j=0;j<width;j++) {
-			if (visited[i * width + j] || disparity_map[i*width+j] == invalid_val) {
+	std::vector<bool> visited(uint32(width * height), false);
+	for (sint32 i = 0; i < height; i++) {
+		for (sint32 j = 0; j < width; j++) {
+			if (visited[i * width + j] || disparity_map[i * width + j] == invalid_val) {
 				// 跳过已访问的像素及无效像素
 				continue;
 			}
@@ -580,15 +580,15 @@ void sgm_util::RemoveSpeckles(float32* disparity_map, const uint64& width, const
 					const sint32 col = pixel.second;
 					const auto& disp_base = disparity_map[row * width + col];
 					// 8邻域遍历
-					for(int r=-1;r<=1;r++) {
-						for(int c=-1;c<=1;c++) {
-							if(r==0&&c==0) {
+					for (int r = -1; r <= 1; r++) {
+						for (int c = -1; c <= 1; c++) {
+							if (r == 0 && c == 0) {
 								continue;
 							}
 							int rowr = row + r;
 							int colc = col + c;
 							if (rowr >= 0 && rowr < height && colc >= 0 && colc < width) {
-								if(!visited[rowr * width + colc] &&
+								if (!visited[rowr * width + colc] &&
 									(disparity_map[rowr * width + colc] != invalid_val) &&
 									abs(disparity_map[rowr * width + colc] - disp_base) <= diff_insame) {
 									vec.emplace_back(rowr, colc);
@@ -602,8 +602,8 @@ void sgm_util::RemoveSpeckles(float32* disparity_map, const uint64& width, const
 			} while (next < vec.size());
 
 			// 把连通域面积小于阈值的区域视差全设为无效值
-			if(vec.size() < min_speckle_aera) {
-				for(auto& pix:vec) {
+			if (vec.size() < min_speckle_aera) {
+				for (auto& pix : vec) {
 					disparity_map[pix.first * width + pix.second] = invalid_val;
 				}
 			}

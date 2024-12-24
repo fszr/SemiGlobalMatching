@@ -139,22 +139,24 @@ private:
 	// ↘ ↓ ↙   5  3  7
 	// →    ←	 1    2
 	// ↗ ↑ ↖   8  4  6
-	/** \brief 聚合匹配代价-方向1	*/
-	uint8* cost_aggr_1_;
-	/** \brief 聚合匹配代价-方向2	*/
-	uint8* cost_aggr_2_;
-	/** \brief 聚合匹配代价-方向3	*/
-	uint8* cost_aggr_3_;
-	/** \brief 聚合匹配代价-方向4	*/
-	uint8* cost_aggr_4_;
-	/** \brief 聚合匹配代价-方向5	*/
-	uint8* cost_aggr_5_;
-	/** \brief 聚合匹配代价-方向6	*/
-	uint8* cost_aggr_6_;
-	/** \brief 聚合匹配代价-方向7	*/
-	uint8* cost_aggr_7_;
-	/** \brief 聚合匹配代价-方向8	*/
-	uint8* cost_aggr_8_;
+	uint8* cost_aggr_path_;
+
+	///** \brief 聚合匹配代价-方向1	*/
+	//uint8* cost_aggr_1_;
+	///** \brief 聚合匹配代价-方向2	*/
+	//uint8* cost_aggr_2_;
+	///** \brief 聚合匹配代价-方向3	*/
+	//uint8* cost_aggr_3_;
+	///** \brief 聚合匹配代价-方向4	*/
+	//uint8* cost_aggr_4_;
+	///** \brief 聚合匹配代价-方向5	*/
+	//uint8* cost_aggr_5_;
+	///** \brief 聚合匹配代价-方向6	*/
+	//uint8* cost_aggr_6_;
+	///** \brief 聚合匹配代价-方向7	*/
+	//uint8* cost_aggr_7_;
+	///** \brief 聚合匹配代价-方向8	*/
+	//uint8* cost_aggr_8_;
 
 	/** \brief 左影像视差图	*/
 	float32* disp_left_;
