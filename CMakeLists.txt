@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(SGM)
+project(SGM LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
 if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug)
+    set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif ()
 
 # 设置输出目录
@@ -41,30 +41,23 @@ elseif(MSVC)
 endif()
 
 # 寻找依赖库opencv
-option(OpenCV_cmake_dir "Path to OpenCV CMake directory" "")
-if(${OpenCV_cmake_dir}  STREQUAL "")
+option(OpenCV_DIR "Path to OpenCV CMake directory" "")
+if(${OpenCV_DIR} STREQUAL "" OR NOT EXISTS ${OpenCV_DIR})
     message(FATAL_ERROR "Please specify OpenCV CMake directory")
-else()
-    set(OpenCV_DIR ${OpenCV_cmake_dir})
 endif()
 
 find_package(OpenCV REQUIRED)
-find_package(OpenMP REQUIRED)
 
 # 是否使用openmp
-option(USE_OPENMP "Enable OpenMP library" ON)
-if(USE_OPENMP)
-    set(OpenMP_LIBS "")
+option(OPENMP_ENABLED "Enable OpenMP library" ON)
+set(OpenMP_LIBS "")
+if(OPENMP_ENABLED)
     find_package(OpenMP)
     if(OPENMP_FOUND)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-        add_compile_definitions(_USE_OPENMP)
-        set(_USE_OPENMP TRUE)
-        # cmake only check for separate OpenMP library on AppleClang 7+
-        # https://github.com/Kitware/CMake/blob/42212f7539040139ecec092547b7d58ef12a4d72/Modules/FindOpenMP.cmake#L252
-        if(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang" AND(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "7.0"))
-            set(OpenMP_LIBS ${OpenMP_libomp_LIBRARY})
-        endif()
+        add_compile_definitions(OPENMP_ENABLED)
+        set(OpenMP_LIBS ${OpenMP_libomp_LIBRARY})
         message("-- OpenMP found. Enabling OpenMP support.")
     else()
         message("-- Can't find OpenMP. Continuing without it.")
@@ -80,6 +73,7 @@ add_library(libtsgm SHARED
     SemiGlobalMatching/sgm_util.h
     SemiGlobalMatching/export.h
 )
+
 target_include_directories(libtsgm PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(libtsgm PUBLIC 
     ${OpenCV_LIBS}

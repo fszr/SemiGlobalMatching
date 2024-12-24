@@ -10,7 +10,7 @@
 #include <vector>
 #include <queue>
 
-#ifdef _USE_OPENMP
+#ifdef OPENMP_ENABLED
 #include <omp.h>
 #endif
 
@@ -22,7 +22,7 @@ void sgm_util::census_transform_5x5(const uint8* source, uint32* census, const u
 	}
 
 	// 逐像素计算census值
-#ifdef _USE_OPENMP
+#ifdef OPENMP_ENABLED
 #pragma omp parallel for schedule(dynamic)
 #endif
 	for (sint32 i = 2; i < height - 2; i++) {
@@ -56,7 +56,7 @@ void sgm_util::census_transform_9x7(const uint8* source, uint64* census, const u
 	}
 
 	// 逐像素计算census值
-#ifdef _USE_OPENMP
+#ifdef OPENMP_ENABLED
 #pragma omp parallel for schedule(dynamic)
 #endif
 	for (sint32 i = 4; i < height - 4; i++) {
@@ -83,40 +83,13 @@ void sgm_util::census_transform_9x7(const uint8* source, uint64* census, const u
 	}
 }
 
-uint8 sgm_util::Hamming32(const uint32& x, const uint32& y)
-{
-	uint32 dist = 0, val = x ^ y;
-
-	// Count the number of set bits
-	while (val) {
-		++dist;
-		val &= val - 1;
-	}
-
-	return static_cast<uint8>(dist);
-}
-
-uint8 sgm_util::Hamming64(const uint64& x, const uint64& y)
-{
-	uint64 dist = 0, val = x ^ y;
-
-	// Count the number of set bits
-	while (val) {
-		++dist;
-		val &= val - 1;
-	}
-
-	return static_cast<uint8>(dist);
-}
-
-
 void sgm_util::CostAggregateLeftRight(const uint8* img_data, const uint64& width, const uint64& height, const sint32& min_disparity, const sint32& max_disparity,
 	const sint32& p1, const sint32& p2_init, const uint8* cost_init, uint8* cost_aggr, bool is_forward)
 {
 	assert(width > 0 && height > 0 && max_disparity > min_disparity);
 
 	// 视差范围
-	const sint32 disp_range = max_disparity - min_disparity;
+	const uint64 disp_range = static_cast<uint64>(sint64(max_disparity) - sint64(min_disparity));
 
 	// P1,P2
 	const auto& P1 = p1;
@@ -127,7 +100,11 @@ void sgm_util::CostAggregateLeftRight(const uint8* img_data, const uint64& width
 	const sint32 direction = is_forward ? 1 : -1;
 
 	// 聚合
+#ifdef OPENMP_ENABLED
+#pragma omp parallel for
+#endif
 	for (sint32 i = 0u; i < height; i++) {
+		//printf("hello,theard = %d\n", omp_get_thread_num());
 		// 路径头为每一行的首(尾,dir=-1)列像素
 		auto cost_init_row = (is_forward) ? (cost_init + i * width * disp_range) : (cost_init + i * width * disp_range + (width - 1) * disp_range);
 		auto cost_aggr_row = (is_forward) ? (cost_aggr + i * width * disp_range) : (cost_aggr + i * width * disp_range + (width - 1) * disp_range);
@@ -157,7 +134,7 @@ void sgm_util::CostAggregateLeftRight(const uint8* img_data, const uint64& width
 		for (sint32 j = 0; j < width - 1; j++) {
 			gray = *img_row;
 			uint8 min_cost = UINT8_MAX;
-			for (sint32 d = 0; d < disp_range; d++){
+			for (uint64 d = 0; d < disp_range; d++){
 				// Lr(p,d) = C(p,d) + min( Lr(p-r,d), Lr(p-r,d-1) + P1, Lr(p-r,d+1) + P1, min(Lr(p-r))+P2 ) - min(Lr(p-r))
 				const uint8  cost = cost_init_row[d];
 				const uint16 l1 = cost_last_path[d + 1];
@@ -193,7 +170,7 @@ void sgm_util::CostAggregateUpDown(const uint8* img_data, const uint64& width, c
 	assert(width > 0 && height > 0 && max_disparity > min_disparity);
 
 	// 视差范围
-	const sint32 disp_range = max_disparity - min_disparity;
+	const uint64 disp_range = static_cast<uint64>(sint64(max_disparity) - sint64(min_disparity));
 
 	// P1,P2
 	const auto& P1 = p1;
@@ -204,6 +181,9 @@ void sgm_util::CostAggregateUpDown(const uint8* img_data, const uint64& width, c
 	const sint32 direction = is_forward ? 1 : -1;
 
 	// 聚合
+#ifdef OPENMP_ENABLED
+#pragma omp parallel for
+#endif
 	for (sint32 j = 0; j < width; j++) {
 		// 路径头为每一列的首(尾,dir=-1)行像素
 		auto cost_init_col = (is_forward) ? (cost_init + j * disp_range) : (cost_init + (height - 1) * width * disp_range + j * disp_range);
@@ -234,7 +214,7 @@ void sgm_util::CostAggregateUpDown(const uint8* img_data, const uint64& width, c
 		for (sint32 i = 0; i < height - 1; i ++) {
 			gray = *img_col;
 			uint8 min_cost = UINT8_MAX;
-			for (sint32 d = 0; d < disp_range; d++) {
+			for (uint64 d = 0; d < disp_range; d++) {
 				// Lr(p,d) = C(p,d) + min( Lr(p-r,d), Lr(p-r,d-1) + P1, Lr(p-r,d+1) + P1, min(Lr(p-r))+P2 ) - min(Lr(p-r))
 				const uint8  cost = cost_init_col[d];
 				const uint16 l1 = cost_last_path[d + 1];

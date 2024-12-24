@@ -25,9 +25,6 @@ namespace sgm_util
 	 */
 	void census_transform_5x5(const uint8* source, uint32* census, const uint64& width, const uint64& height);
 	void census_transform_9x7(const uint8* source, uint64* census, const uint64& width, const uint64& height);
-	// Hamming¾àÀë
-	uint8 Hamming32(const uint32& x, const uint32& y);
-	uint8 Hamming64(const uint64& x, const uint64& y);
 
 	/**
 	 * \brief ×óÓÒÂ·¾¶¾ÛºÏ ¡ú ¡û
