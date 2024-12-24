@@ -54,9 +54,10 @@ int main(int argv, char** argc)
     //···············································································//
     const uint32 width = static_cast<uint32>(img_left.cols);
     const uint32 height = static_cast<uint32>(img_right.rows);
+    const uint64 pixel_num = uint64(width) * uint64(height);
     // 左右影像的灰度数据
-    auto bytes_left = new uint8[width * height];
-    auto bytes_right = new uint8[width * height];
+    auto bytes_left = new uint8[pixel_num];
+    auto bytes_right = new uint8[pixel_num];
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             bytes_left[i * width + j] = img_left.at<uint8>(i, j);
@@ -74,7 +75,7 @@ int main(int argv, char** argc)
     sgm_option.min_disparity = argv < 4 ? 0 : atoi(argc[3]);
     sgm_option.max_disparity = argv < 5 ? 64 : atoi(argc[4]);
     // census窗口类型
-    sgm_option.census_size = SemiGlobalMatching::Census5x5;
+    sgm_option.census_size = SemiGlobalMatching::CensusSize::Census5x5;
     // 一致性检查
     sgm_option.is_check_lr = true;
     sgm_option.lrcheck_thres = 1.0f;
@@ -118,7 +119,7 @@ int main(int argv, char** argc)
 	printf("SGM Matching...\n");
     start = std::chrono::steady_clock::now();
     // disparity数组保存子像素的视差结果
-    auto disparity = new float32[uint32(width * height)]();
+    auto disparity = new float32[pixel_num]();
     if (!sgm.Match(bytes_left, bytes_right, disparity)) {
         std::cout << "SGM匹配失败！" << std::endl;
         return -2;
@@ -144,8 +145,8 @@ int main(int argv, char** argc)
     }
     printf("% f, % f\n", min_disp, max_disp);
 
-    for (sint32 i = 0; i < height; i++) {
-        for (sint32 j = 0; j < width; j++) {
+    for (uint32 i = 0; i < height; i++) {
+        for (uint32 j = 0; j < width; j++) {
             const float32 disp = disparity[i * width + j];
             if (disp == Invalid_Float) {
                 disp_mat.data[i * width + j] = 0;

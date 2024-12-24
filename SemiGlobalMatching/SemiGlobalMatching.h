@@ -21,7 +21,7 @@ public:
 
 
 	/** \brief Census窗口尺寸类型 */
-	enum CensusSize {
+	enum class CensusSize {
 		Census5x5 = 0,
 		Census9x7
 	};
@@ -50,7 +50,7 @@ public:
 		sint32  p1;				// 惩罚项参数P1
 		sint32  p2_init;		// 惩罚项参数P2
 
-		SGMOption(): num_paths(8), min_disparity(0), max_disparity(64), census_size(Census5x5),
+		SGMOption(): num_paths(8), min_disparity(0), max_disparity(64), census_size(CensusSize::Census5x5),
 		             is_check_unique(true), uniqueness_ratio(0.95f),
 		             is_check_lr(true), lrcheck_thres(1.0f),
 		             is_remove_speckles(true), min_speckle_aera(20),
@@ -64,7 +64,7 @@ public:
 	 * \param height	输入，核线像对影像高
 	 * \param option	输入，SemiGlobalMatching参数
 	 */
-	bool Initialize(const sint32& width, const sint32& height, const SGMOption& option);
+	bool Initialize(const uint32& width, const uint32& height, const SGMOption& option);
 
 	/**
 	 * \brief 执行匹配
