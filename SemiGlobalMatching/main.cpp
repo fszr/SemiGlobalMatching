@@ -32,6 +32,9 @@ int main(int argv, char** argc)
     std::string path_left = argc[1];
     std::string path_right = argc[2];
 
+    std::string output_folder = (std::filesystem::path(argc[1]).parent_path() / "ethan-li").string();
+    std::string left_no_ext = std::filesystem::path(argc[1]).filename().stem().string();
+
     cv::Mat img_left_c = cv::imread(path_left, cv::IMREAD_COLOR);
     cv::Mat img_left = cv::imread(path_left, cv::IMREAD_GRAYSCALE);
     cv::Mat img_right = cv::imread(path_right, cv::IMREAD_GRAYSCALE);
@@ -75,15 +78,15 @@ int main(int argv, char** argc)
     sgm_option.min_disparity = argv < 4 ? 0 : atoi(argc[3]);
     sgm_option.max_disparity = argv < 5 ? 64 : atoi(argc[4]);
     // census窗口类型
-    sgm_option.census_size = SemiGlobalMatching::CensusSize::Census5x5;
+    sgm_option.census_size = SemiGlobalMatching::CensusSize::Census9x7;
     // 一致性检查
-    sgm_option.is_check_lr = true;
+    sgm_option.is_check_lr = false;
     sgm_option.lrcheck_thres = 1.0f;
     // 唯一性约束
-    sgm_option.is_check_unique = true;
+    sgm_option.is_check_unique = false;
     sgm_option.uniqueness_ratio = 0.99;
     // 剔除小连通区
-    sgm_option.is_remove_speckles = true;
+    sgm_option.is_remove_speckles = false;
     sgm_option.min_speckle_aera = 50;
     // 惩罚项P1、P2
     sgm_option.p1 = 10;
@@ -128,12 +131,15 @@ int main(int argv, char** argc)
     tt = duration_cast<std::chrono::milliseconds>(end - start);
     printf("\nSGM Matching...Done! Timing :   %lf s\n", tt.count() / 1000.0);
 
+    //
+    cv::Mat diaparity_map_f(height, width, CV_32FC1, disparity);
+    cv::imwrite(output_folder + "\\" + left_no_ext + "-li-dis.tiff", diaparity_map_f);
+
     //···············································································//
 	// 显示视差图
     // 注意，计算点云不能用disp_mat的数据，它是用来显示和保存结果用的。计算点云要用上面的disparity数组里的数据，是子像素浮点数
     cv::Mat disp_mat = cv::Mat(height, width, CV_8UC1);
     float min_disp = width, max_disp = -float(width);
-    printf("% f, % f\n", min_disp, max_disp);
     for (sint32 i = 0; i < height; i++) {
         for (sint32 j = 0; j < width; j++) {
             const float32 disp = disparity[i * width + j];
@@ -163,10 +169,8 @@ int main(int argv, char** argc)
     //cv::imshow("视差图-伪彩", disp_color);
 
     // 保存结果
-    std::string disp_map_path = argc[1];
-    disp_map_path += ".d.png";
-    std::string disp_color_map_path = argc[1];
-    disp_color_map_path += ".c.png";
+    std::string disp_map_path = output_folder + "/" + left_no_ext + "-li-dis-gray.png";
+    std::string disp_color_map_path = output_folder + "/" + left_no_ext + "-li-dis-color.png";
     if (std::filesystem::exists(disp_map_path)) {
         std::filesystem::remove(disp_map_path);
     }    
